@@ -7,36 +7,57 @@ provider "aws" {
   secret_key = var.secret_key
 }
 
-resource "aws_iam_user" "user1" {
-  name = "az104-user1"
-
-  tags = {
-    Department = "IT"
-    JobTitle   = "IT Lab Administrator"
-    Location   = "United States"
-  }
+resource "aws_iam_group" "helpdesk" {
+  name = "HelpDesk"
 }
 
-resource "aws_iam_user" "guest_user" {
-  name = "az104-guest-user"
+resource "aws_iam_policy" "vm_contributor" {
+  name = "VMContributor"
 
-  tags = {
-    Department = "IT"
-    JobTitle   = "IT Lab Administrator"
-    Type       = "Guest"
-  }
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ec2:*",
+          "elasticloadbalancing:*",
+          "cloudwatch:*",
+          "autoscaling:*"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }
 
-resource "aws_iam_group" "it_lab_admins" {
-  name = "IT-Lab-Administrators"
+resource "aws_iam_policy" "custom_support_request" {
+  name = "CustomSupportRequest"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "support:CreateCase",
+          "support:DescribeCases",
+          "support:DescribeServices",
+          "support:DescribeSeverityLevels",
+          "support:AddCommunicationToCase"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }
 
-resource "aws_iam_group_membership" "lab_membership" {
-  name  = "it-lab-membership"
-  group = aws_iam_group.it_lab_admins.name
+resource "aws_iam_group_policy_attachment" "helpdesk_vm" {
+  group      = aws_iam_group.helpdesk.name
+  policy_arn = aws_iam_policy.vm_contributor.arn
+}
 
-  users = [
-    aws_iam_user.user1.name,
-    aws_iam_user.guest_user.name,
-  ]
+resource "aws_iam_group_policy_attachment" "helpdesk_support" {
+  group      = aws_iam_group.helpdesk.name
+  policy_arn = aws_iam_policy.custom_support_request.arn
 }
