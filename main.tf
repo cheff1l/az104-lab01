@@ -7,139 +7,67 @@ provider "aws" {
   secret_key = var.secret_key
 }
 
-# ====== TASK 1: CoreServicesVnet ======
-
 resource "aws_vpc" "core_services_vnet" {
-  cidr_block = "10.20.0.0/16"
-
-  tags = {
-    Name = "CoreServicesVnet"
-  }
+  cidr_block = "10.0.0.0/16"
+  tags = { Name = "CoreServicesVnet" }
 }
 
-resource "aws_subnet" "shared_services_subnet" {
-  vpc_id            = aws_vpc.core_services_vnet.id
-  cidr_block        = "10.20.10.0/24"
-
-  tags = {
-    Name = "SharedServicesSubnet"
-  }
+resource "aws_subnet" "core_subnet" {
+  vpc_id     = aws_vpc.core_services_vnet.id
+  cidr_block = "10.0.0.0/24"
+  tags = { Name = "Core" }
 }
 
-resource "aws_subnet" "database_subnet" {
-  vpc_id            = aws_vpc.core_services_vnet.id
-  cidr_block        = "10.20.20.0/24"
-
-  tags = {
-    Name = "DatabaseSubnet"
-  }
+resource "aws_subnet" "perimeter_subnet" {
+  vpc_id     = aws_vpc.core_services_vnet.id
+  cidr_block = "10.0.1.0/24"
+  tags = { Name = "Perimeter" }
 }
 
-# ====== TASK 2: ManufacturingVnet ======
+resource "aws_instance" "core_services_vm" {
+  ami           = "ami-08eb150f611ca277f"
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.core_subnet.id
+  tags = { Name = "CoreServicesVM" }
+}
 
 resource "aws_vpc" "manufacturing_vnet" {
-  cidr_block = "10.30.0.0/16"
-
-  tags = {
-    Name = "ManufacturingVnet"
-  }
+  cidr_block = "172.16.0.0/16"
+  tags = { Name = "ManufacturingVnet" }
 }
 
-resource "aws_subnet" "sensor_subnet1" {
+resource "aws_subnet" "manufacturing_subnet" {
   vpc_id     = aws_vpc.manufacturing_vnet.id
-  cidr_block = "10.30.20.0/24"
-
-  tags = {
-    Name = "SensorSubnet1"
-  }
+  cidr_block = "172.16.0.0/24"
+  tags = { Name = "Manufacturing" }
 }
 
-resource "aws_subnet" "sensor_subnet2" {
-  vpc_id     = aws_vpc.manufacturing_vnet.id
-  cidr_block = "10.30.21.0/24"
-
-  tags = {
-    Name = "SensorSubnet2"
-  }
+resource "aws_instance" "manufacturing_vm" {
+  ami           = "ami-08eb150f611ca277f"
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.manufacturing_subnet.id
+  tags = { Name = "ManufacturingVM" }
 }
 
-# ====== TASK 3: ASG + NSG ======
+resource "aws_vpc_peering_connection" "core_to_manufacturing" {
+  vpc_id      = aws_vpc.core_services_vnet.id
+  peer_vpc_id = aws_vpc.manufacturing_vnet.id
+  auto_accept = true
+  tags = { Name = "CoreServicesVnet-to-ManufacturingVnet" }
+}
 
-resource "aws_security_group" "asg_web" {
-  name   = "asg-web"
+resource "aws_route_table" "rt_core_services" {
   vpc_id = aws_vpc.core_services_vnet.id
 
-  tags = {
-    Name = "asg-web"
+  route {
+    cidr_block                = "172.16.0.0/16"
+    vpc_peering_connection_id = aws_vpc_peering_connection.core_to_manufacturing.id
   }
+
+  tags = { Name = "rt-CoreServices" }
 }
 
-resource "aws_security_group" "nsg_secure" {
-  name   = "myNSGSecure"
-  vpc_id = aws_vpc.core_services_vnet.id
-
-  ingress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
-    security_groups = [aws_security_group.asg_web.id]
-  }
-
-  ingress {
-    from_port       = 443
-    to_port         = 443
-    protocol        = "tcp"
-    security_groups = [aws_security_group.asg_web.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["10.0.0.0/8"]
-  }
-
-  tags = {
-    Name = "myNSGSecure"
-  }
-}
-
-# ====== TASK 4: DNS ======
-
-resource "aws_route53_zone" "public_dns" {
-  name = "contoso.com"
-
-  tags = {
-    Name = "contoso.com"
-  }
-}
-
-resource "aws_route53_record" "www" {
-  zone_id = aws_route53_zone.public_dns.zone_id
-  name    = "www.contoso.com"
-  type    = "A"
-  ttl     = 1
-
-  records = ["10.1.1.4"]
-}
-
-resource "aws_route53_zone" "private_dns" {
-  name = "private.contoso.com"
-
-  vpc {
-    vpc_id = aws_vpc.manufacturing_vnet.id
-  }
-
-  tags = {
-    Name = "private.contoso.com"
-  }
-}
-
-resource "aws_route53_record" "sensorvm" {
-  zone_id = aws_route53_zone.private_dns.zone_id
-  name    = "sensorvm.private.contoso.com"
-  type    = "A"
-  ttl     = 1
-
-  records = ["10.1.1.4"]
+resource "aws_route_table_association" "core_subnet_assoc" {
+  subnet_id      = aws_subnet.core_subnet.id
+  route_table_id = aws_route_table.rt_core_services.id
 }
