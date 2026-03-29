@@ -7,57 +7,52 @@ provider "aws" {
   secret_key = var.secret_key
 }
 
-resource "aws_iam_group" "helpdesk" {
-  name = "HelpDesk"
+resource "aws_ebs_volume" "disk1" {
+  availability_zone = "eu-north-1a"
+  size              = 32
+  type              = "standard"
+
+  tags = {
+    Name = "az104-disk1"
+  }
 }
 
-resource "aws_iam_policy" "vm_contributor" {
-  name = "VMContributor"
+resource "aws_ebs_volume" "disk2" {
+  availability_zone = "eu-north-1a"
+  size              = 32
+  type              = "standard"
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ec2:*",
-          "elasticloadbalancing:*",
-          "cloudwatch:*",
-          "autoscaling:*"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
+  tags = {
+    Name = "az104-disk2"
+  }
 }
 
-resource "aws_iam_policy" "custom_support_request" {
-  name = "CustomSupportRequest"
+resource "aws_ebs_volume" "disk3" {
+  availability_zone = "eu-north-1a"
+  size              = 32
+  type              = "standard"
 
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "support:CreateCase",
-          "support:DescribeCases",
-          "support:DescribeServices",
-          "support:DescribeSeverityLevels",
-          "support:AddCommunicationToCase"
-        ]
-        Resource = "*"
-      }
-    ]
-  })
+  tags = {
+    Name = "az104-disk3"
+  }
 }
 
-resource "aws_iam_group_policy_attachment" "helpdesk_vm" {
-  group      = aws_iam_group.helpdesk.name
-  policy_arn = aws_iam_policy.vm_contributor.arn
+resource "aws_ebs_volume" "disk4" {
+  availability_zone = "eu-north-1a"
+  size              = 32
+  type              = "standard"
+
+  tags = {
+    Name = "az104-disk4"
+  }
 }
 
-resource "aws_iam_group_policy_attachment" "helpdesk_support" {
-  group      = aws_iam_group.helpdesk.name
-  policy_arn = aws_iam_policy.custom_support_request.arn
+resource "aws_ebs_volume" "disk5" {
+  availability_zone = "eu-north-1a"
+  size              = 32
+  type              = "gp2"
+
+  tags = {
+    Name = "az104-disk5"
+  }
 }
