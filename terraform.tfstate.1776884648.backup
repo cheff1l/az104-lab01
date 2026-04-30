@@ -1,0 +1,539 @@
+{
+  "version": 4,
+  "terraform_version": "1.14.8",
+  "serial": 22,
+  "lineage": "87ca8b5e-c6fc-0c96-e310-62ecd0575e92",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "aws_backup_plan",
+      "name": "az104_backup",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "advanced_backup_setting": [],
+            "arn": "arn:aws:backup:eu-north-1:608810145311:backup-plan:6631d132-6c71-40b4-8750-8c31d5108bc3",
+            "id": "6631d132-6c71-40b4-8750-8c31d5108bc3",
+            "name": "az104-backup",
+            "region": "eu-north-1",
+            "rule": [
+              {
+                "completion_window": 180,
+                "copy_action": [],
+                "enable_continuous_backup": false,
+                "lifecycle": [
+                  {
+                    "cold_storage_after": 0,
+                    "delete_after": 30,
+                    "opt_in_to_archive_for_supported_resources": false
+                  }
+                ],
+                "recovery_point_tags": {},
+                "rule_name": "az104-policy",
+                "scan_action": [],
+                "schedule": "cron(0 0 * * ? *)",
+                "schedule_expression_timezone": "Etc/UTC",
+                "start_window": 60,
+                "target_logically_air_gapped_backup_vault_arn": "",
+                "target_vault_name": "az104-rsv-region1"
+              }
+            ],
+            "scan_setting": [],
+            "tags": {
+              "Name": "az104-backup"
+            },
+            "tags_all": {
+              "Name": "az104-backup"
+            },
+            "version": "NDQ4MmRjNzktMmVlYy00MzliLTg2ZWMtOTE2MGQyZmRlNTg3"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_backup_vault.region1"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_backup_selection",
+      "name": "vm0_backup",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "condition": [
+              {
+                "string_equals": [],
+                "string_like": [],
+                "string_not_equals": [],
+                "string_not_like": []
+              }
+            ],
+            "iam_role_arn": "arn:aws:iam::608810145311:role/az104-backup-role",
+            "id": "5adc4a58-eb3b-4fc5-b3d3-c14e80d72c4b",
+            "name": "az104-vm0-backup",
+            "not_resources": [],
+            "plan_id": "6631d132-6c71-40b4-8750-8c31d5108bc3",
+            "region": "eu-north-1",
+            "resources": [
+              "arn:aws:ec2:eu-north-1:608810145311:instance/i-0641c82c5b3633830"
+            ],
+            "selection_tag": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_backup_plan.az104_backup",
+            "aws_backup_vault.region1",
+            "aws_iam_role.backup_role",
+            "aws_instance.vm0",
+            "aws_subnet.subnet1",
+            "aws_vpc.az104_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_backup_vault",
+      "name": "region1",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:backup:eu-north-1:608810145311:backup-vault:az104-rsv-region1",
+            "force_destroy": false,
+            "id": "az104-rsv-region1",
+            "kms_key_arn": "arn:aws:kms:eu-north-1:608810145311:key/b0231d90-ea85-44d9-9b5f-6cb2bd063b32",
+            "name": "az104-rsv-region1",
+            "recovery_points": 0,
+            "region": "eu-north-1",
+            "tags": {
+              "Name": "az104-rsv-region1"
+            },
+            "tags_all": {
+              "Name": "az104-rsv-region1"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiZGVsZXRlIjo2MDAwMDAwMDAwMDB9fQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_backup_vault",
+      "name": "region2",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"].region2",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:backup:eu-west-1:608810145311:backup-vault:az104-rsv-region2",
+            "force_destroy": false,
+            "id": "az104-rsv-region2",
+            "kms_key_arn": "arn:aws:kms:eu-west-1:608810145311:key/26b66103-f151-4ad8-879c-12a24b78aafb",
+            "name": "az104-rsv-region2",
+            "recovery_points": 0,
+            "region": "eu-west-1",
+            "tags": {
+              "Name": "az104-rsv-region2"
+            },
+            "tags_all": {
+              "Name": "az104-rsv-region2"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiZGVsZXRlIjo2MDAwMDAwMDAwMDB9fQ=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_cloudwatch_metric_alarm",
+      "name": "backup_failed",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "actions_enabled": true,
+            "alarm_actions": [],
+            "alarm_description": "Alert when backup job fails",
+            "alarm_name": "az104-backup-failed",
+            "arn": "arn:aws:cloudwatch:eu-north-1:608810145311:alarm:az104-backup-failed",
+            "comparison_operator": "GreaterThanThreshold",
+            "datapoints_to_alarm": 0,
+            "dimensions": {
+              "BackupVaultName": "az104-rsv-region1"
+            },
+            "evaluate_low_sample_count_percentiles": "",
+            "evaluation_periods": 1,
+            "extended_statistic": "",
+            "id": "az104-backup-failed",
+            "insufficient_data_actions": [],
+            "metric_name": "NumberOfBackupJobsFailed",
+            "metric_query": [],
+            "namespace": "AWS/Backup",
+            "ok_actions": [],
+            "period": 86400,
+            "region": "eu-north-1",
+            "statistic": "Sum",
+            "tags": {},
+            "tags_all": {},
+            "threshold": 0,
+            "threshold_metric_id": "",
+            "treat_missing_data": "missing",
+            "unit": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "608810145311",
+            "alarm_name": "az104-backup-failed",
+            "region": "eu-north-1"
+          },
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ==",
+          "dependencies": [
+            "aws_backup_vault.region1"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "backup_role",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::608810145311:role/az104-backup-role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"backup.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2026-04-22T12:49:29Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "az104-backup-role",
+            "inline_policy": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
+            ],
+            "max_session_duration": 3600,
+            "name": "az104-backup-role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {},
+            "tags_all": {},
+            "unique_id": "AROAY3P7JSYPWBGU7MLB4"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "608810145311",
+            "name": "az104-backup-role"
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "backup_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "az104-backup-role/arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup",
+            "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup",
+            "role": "az104-backup-role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "608810145311",
+            "policy_arn": "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup",
+            "role": "az104-backup-role"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "aws_iam_role.backup_role"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_instance",
+      "name": "vm0",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 2,
+          "attributes": {
+            "ami": "ami-08eb150f611ca277f",
+            "arn": "arn:aws:ec2:eu-north-1:608810145311:instance/i-0641c82c5b3633830",
+            "associate_public_ip_address": false,
+            "availability_zone": "eu-north-1a",
+            "capacity_reservation_specification": [
+              {
+                "capacity_reservation_preference": "open",
+                "capacity_reservation_target": []
+              }
+            ],
+            "cpu_options": [
+              {
+                "amd_sev_snp": "",
+                "core_count": 1,
+                "nested_virtualization": "",
+                "threads_per_core": 2
+              }
+            ],
+            "credit_specification": [
+              {
+                "cpu_credits": "unlimited"
+              }
+            ],
+            "disable_api_stop": false,
+            "disable_api_termination": false,
+            "ebs_block_device": [],
+            "ebs_optimized": false,
+            "enable_primary_ipv6": null,
+            "enclave_options": [
+              {
+                "enabled": false
+              }
+            ],
+            "ephemeral_block_device": [],
+            "force_destroy": false,
+            "get_password_data": false,
+            "hibernation": false,
+            "host_id": "",
+            "host_resource_group_arn": null,
+            "iam_instance_profile": "",
+            "id": "i-0641c82c5b3633830",
+            "instance_initiated_shutdown_behavior": "stop",
+            "instance_lifecycle": "",
+            "instance_market_options": [],
+            "instance_state": "running",
+            "instance_type": "t3.micro",
+            "ipv6_address_count": 0,
+            "ipv6_addresses": [],
+            "key_name": "",
+            "launch_template": [],
+            "maintenance_options": [
+              {
+                "auto_recovery": "default"
+              }
+            ],
+            "metadata_options": [
+              {
+                "http_endpoint": "enabled",
+                "http_protocol_ipv6": "disabled",
+                "http_put_response_hop_limit": 2,
+                "http_tokens": "required",
+                "instance_metadata_tags": "disabled"
+              }
+            ],
+            "monitoring": false,
+            "network_interface": [],
+            "outpost_arn": "",
+            "password_data": "",
+            "placement_group": "",
+            "placement_group_id": "",
+            "placement_partition_number": 0,
+            "primary_network_interface": [
+              {
+                "delete_on_termination": true,
+                "network_interface_id": "eni-0c3589a4f159ed36a"
+              }
+            ],
+            "primary_network_interface_id": "eni-0c3589a4f159ed36a",
+            "private_dns": "ip-10-0-0-55.eu-north-1.compute.internal",
+            "private_dns_name_options": [
+              {
+                "enable_resource_name_dns_a_record": false,
+                "enable_resource_name_dns_aaaa_record": false,
+                "hostname_type": "ip-name"
+              }
+            ],
+            "private_ip": "10.0.0.55",
+            "public_dns": "",
+            "public_ip": "",
+            "region": "eu-north-1",
+            "root_block_device": [
+              {
+                "delete_on_termination": true,
+                "device_name": "/dev/sda1",
+                "encrypted": false,
+                "iops": 3000,
+                "kms_key_id": "",
+                "tags": {},
+                "tags_all": {},
+                "throughput": 125,
+                "volume_id": "vol-06183baed3f08da12",
+                "volume_size": 8,
+                "volume_type": "gp3"
+              }
+            ],
+            "secondary_network_interface": [],
+            "secondary_private_ips": [],
+            "security_groups": [],
+            "source_dest_check": true,
+            "spot_instance_request_id": "",
+            "subnet_id": "subnet-00d8cee78d6693936",
+            "tags": {
+              "Name": "az104-10-vm0"
+            },
+            "tags_all": {
+              "Name": "az104-10-vm0"
+            },
+            "tenancy": "default",
+            "timeouts": null,
+            "user_data": null,
+            "user_data_base64": null,
+            "user_data_replace_on_change": false,
+            "volume_tags": null,
+            "vpc_security_group_ids": [
+              "sg-0507ce1e872959215"
+            ]
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "608810145311",
+            "id": "i-0641c82c5b3633830",
+            "region": "eu-north-1"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMCwicmVhZCI6OTAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMiJ9",
+          "dependencies": [
+            "aws_subnet.subnet1",
+            "aws_vpc.az104_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "subnet1",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:eu-north-1:608810145311:subnet/subnet-00d8cee78d6693936",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "eu-north-1a",
+            "availability_zone_id": "eun1-az1",
+            "cidr_block": "10.0.0.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-00d8cee78d6693936",
+            "ipv4_ipam_pool_id": null,
+            "ipv4_netmask_length": null,
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_ipam_pool_id": null,
+            "ipv6_native": false,
+            "ipv6_netmask_length": null,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "608810145311",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "eu-north-1",
+            "tags": {
+              "Name": "az104-subnet1"
+            },
+            "tags_all": {
+              "Name": "az104-subnet1"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-08cf73c5762a89bbb"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "608810145311",
+            "id": "subnet-00d8cee78d6693936",
+            "region": "eu-north-1"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "aws_vpc.az104_vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "az104_vpc",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:eu-north-1:608810145311:vpc/vpc-08cf73c5762a89bbb",
+            "assign_generated_ipv6_cidr_block": false,
+            "cidr_block": "10.0.0.0/16",
+            "default_network_acl_id": "acl-0633edc3d8489633b",
+            "default_route_table_id": "rtb-07c7d662abf56f71a",
+            "default_security_group_id": "sg-0507ce1e872959215",
+            "dhcp_options_id": "dopt-0b637b171d48d2884",
+            "enable_dns_hostnames": false,
+            "enable_dns_support": true,
+            "enable_network_address_usage_metrics": false,
+            "id": "vpc-08cf73c5762a89bbb",
+            "instance_tenancy": "default",
+            "ipv4_ipam_pool_id": null,
+            "ipv4_netmask_length": null,
+            "ipv6_association_id": "",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_network_border_group": "",
+            "ipv6_ipam_pool_id": "",
+            "ipv6_netmask_length": 0,
+            "main_route_table_id": "rtb-07c7d662abf56f71a",
+            "owner_id": "608810145311",
+            "region": "eu-north-1",
+            "tags": {
+              "Name": "az104-rg-region1-vpc"
+            },
+            "tags_all": {
+              "Name": "az104-rg-region1-vpc"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "608810145311",
+            "id": "vpc-08cf73c5762a89bbb",
+            "region": "eu-north-1"
+          },
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
